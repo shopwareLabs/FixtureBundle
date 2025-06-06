@@ -1,0 +1,14 @@
+{
+  "name": "shopware/fixture-bundle",
+  "description": "Fixture Bundle for Shopware 6",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Shopware\\FixtureBundle\\": "src/"
+    }
+  },
+  "require": {
+    "shopware/core": "^6.6"
+  }
+}
