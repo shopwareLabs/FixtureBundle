@@ -21,5 +21,11 @@
             <argument type="service" id="Shopware\FixtureBundle\FixtureCollection"/>
             <tag name="console.command"/>
         </service>
+
+        <!-- Theme Fixture Loader -->
+        <service id="Shopware\FixtureBundle\Helper\Theme\ThemeFixtureLoader">
+            <argument type="service" id="theme.repository"/>
+            <argument type="service" id="Shopware\Storefront\Theme\ThemeService"/>
+        </service>
     </services>
 </container>

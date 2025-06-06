@@ -200,26 +200,111 @@ Fixtures are automatically discovered and registered if they:
 2. Have the `#[Fixture]` attribute
 3. Are registered as services (auto-configuration is enabled by default)
 
+## Theme Fixtures
+
+The FixtureBundle provides a convenient way to configure theme settings through fixtures using the `ThemeFixtureLoader` and `ThemeFixtureDefinition` classes.
+
+### Basic Theme Fixture
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Fixture;
+
+use Shopware\FixtureBundle\Attribute\Fixture;
+use Shopware\FixtureBundle\FixtureInterface;
+use Shopware\FixtureBundle\Helper\Theme\ThemeFixtureDefinition;
+use Shopware\FixtureBundle\Helper\Theme\ThemeFixtureLoader;
+
+#[Fixture(groups: ['theme-config'])]
+class ThemeFixture implements FixtureInterface
+{
+    public function __construct(
+        private readonly ThemeFixtureLoader $themeFixtureLoader
+    ) {
+    }
+
+    public function load(): void
+    {
+        $this->themeFixtureLoader->load(
+            (new ThemeFixtureDefinition('Shopware default theme'))
+                ->config('sw-color-brand-primary', '#ff6900')
+                ->config('sw-border-radius-default', '8px')
+                ->config('sw-font-family-base', '"Inter", sans-serif')
+                ->config('sw-background-color', '#f8f9fa')
+        );
+    }
+}
+```
+
+### Multiple Theme Configuration
+
+```php
+#[Fixture(groups: ['theme-config', 'branding'])]
+class BrandingThemeFixture implements FixtureInterface
+{
+    public function __construct(
+        private readonly ThemeFixtureLoader $themeFixtureLoader
+    ) {
+    }
+
+    public function load(): void
+    {
+        // Configure main storefront theme
+        $this->themeFixtureLoader->load(
+            (new ThemeFixtureDefinition('Shopware default theme'))
+                ->config('sw-color-brand-primary', '#007bff')
+                ->config('sw-color-brand-secondary', '#6c757d')
+                ->config('sw-logo-desktop', 'media/logo-desktop.svg')
+                ->config('sw-logo-mobile', 'media/logo-mobile.svg')
+        );
+
+        // Configure custom theme if available
+        try {
+            $this->themeFixtureLoader->load(
+                (new ThemeFixtureDefinition('Custom Theme'))
+                    ->config('custom-header-color', '#ffffff')
+                    ->config('custom-footer-background', '#333333')
+            );
+        } catch (FixtureException $e) {
+            // Custom theme not available, skip
+        }
+    }
+}
+```
+
+### Theme Fixture Features
+
+- **Fluent Configuration**: Chain multiple `->config()` calls for readability
+- **Automatic Theme Discovery**: Finds themes by name automatically
+- **Change Detection**: Only updates and recompiles when configuration actually changes
+- **Error Handling**: Throws `FixtureException::themeNotFound()` if theme doesn't exist
+- **Automatic Recompilation**: Theme is automatically recompiled after configuration changes
+
+### Available Configuration Fields
+
+Common theme configuration fields include:
+- `sw-color-brand-primary` - Primary brand color
+- `sw-color-brand-secondary` - Secondary brand color  
+- `sw-border-radius-default` - Default border radius
+- `sw-font-family-base` - Base font family
+- `sw-background-color` - Background color
+- `sw-logo-desktop` - Desktop logo
+- `sw-logo-mobile` - Mobile logo
+- `sw-logo-tablet` - Tablet logo
+- `sw-logo-desktop-height` - Desktop logo height
+- `sw-logo-mobile-height` - Mobile logo height
+
+*Note: Available fields depend on your theme's configuration schema defined in `theme.json`*
+
 ## Best Practices
 
 1. **Use meaningful names**: Name your fixtures clearly to indicate what data they create
-2. **Organize with groups**: Use groups to categorize fixtures (e.g., 'test-data', 'demo-data', 'performance-test')
+2. **Organize with groups**: Use groups to categorize fixtures (e.g., 'test-data', 'demo-data', 'performance-test', 'theme-config')
 3. **Declare dependencies explicitly**: Always declare dependencies to ensure correct execution order
 4. **Keep fixtures focused**: Each fixture should have a single responsibility
 5. **Make fixtures idempotent**: Fixtures should be able to run multiple times without errors
 6. **Use dependency injection**: Inject the services you need rather than accessing the container directly
-
-## Troubleshooting
-
-### Circular Dependency Error
-If you see "Circular dependency detected for fixture", check your `dependsOn` declarations to ensure there are no circular references.
-
-### Fixture Not Found
-Ensure your fixture:
-- Is in a directory that's auto-loaded
-- Implements `FixtureInterface`
-- Has the `#[Fixture]` attribute
-- Is registered as a service
-
-### Dependencies Not in Group
-When loading fixtures by group, dependencies outside the group are skipped. Ensure all required dependencies are in the same group or use no group filter.
+7. **Handle theme errors gracefully**: Use try-catch blocks when configuring optional themes
