@@ -299,6 +299,64 @@ Common theme configuration fields include:
 
 *Note: Available fields depend on your theme's configuration schema defined in `theme.json`*
 
+## Custom Field Fixtures
+
+The FixtureBundle provides helper classes to easily create and manage custom fields through fixtures using `CustomFieldSetFixtureLoader` and related definition classes.
+
+### Basic Custom Field Fixture
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Acme\Fixture;
+
+use Shopware\Core\System\CustomField\CustomFieldTypes;
+use Shopware\FixtureBundle\Attribute\Fixture;
+use Shopware\FixtureBundle\FixtureInterface;
+use Shopware\FixtureBundle\Helper\CustomField\CustomFieldFixtureDefinition;
+use Shopware\FixtureBundle\Helper\CustomField\CustomFieldSetFixtureDefinition;
+use Shopware\FixtureBundle\Helper\CustomField\CustomFieldSetFixtureLoader;
+
+#[Fixture]
+class CustomFieldFixture implements FixtureInterface
+{
+    public function __construct(
+        private readonly CustomFieldSetFixtureLoader $customFieldSetFixtureLoader
+    ) {
+    }
+
+    public function load(): void
+    {
+        $this->customFieldSetFixtureLoader->load(
+            (new CustomFieldSetFixtureDefinition('Product Specifications', 'product_specs'))
+                ->relation('product')
+                ->field(
+                    (new CustomFieldFixtureDefinition('weight', CustomFieldTypes::FLOAT))
+                        ->label('en-GB', 'Weight (kg)')
+                        ->label('de-DE', 'Gewicht (kg)')
+                        ->placeholder('en-GB', 'Enter product weight')
+                        ->helpText('en-GB', 'Product weight in kilograms')
+                        ->position(10)
+                )
+                ->field(
+                    (new CustomFieldFixtureDefinition('dimensions', CustomFieldTypes::TEXT))
+                        ->label('en-GB', 'Dimensions')
+                        ->placeholder('en-GB', 'L x W x H')
+                        ->position(20)
+                )
+                ->field(
+                    (new CustomFieldFixtureDefinition('warranty_period', CustomFieldTypes::INT))
+                        ->label('en-GB', 'Warranty Period (months)')
+                        ->config(['min' => 0, 'max' => 120])
+                        ->position(30)
+                )
+        );
+    }
+}
+```
+
 ## Best Practices
 
 1. **Use meaningful names**: Name your fixtures clearly to indicate what data they create
