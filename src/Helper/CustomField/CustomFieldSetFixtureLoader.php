@@ -10,10 +10,16 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\CustomField\Aggregate\CustomFieldSet\CustomFieldSetCollection;
+use Shopware\Core\System\CustomField\CustomFieldCollection;
 use Shopware\Core\System\CustomField\CustomFieldEntity;
 
 class CustomFieldSetFixtureLoader
 {
+    /**
+     * @param EntityRepository<CustomFieldSetCollection> $customFieldSetRepository
+     * @param EntityRepository<CustomFieldCollection> $customFieldRepository
+     */
     public function __construct(
         private readonly EntityRepository $customFieldSetRepository,
         private readonly EntityRepository $customFieldRepository
@@ -22,7 +28,7 @@ class CustomFieldSetFixtureLoader
 
     public function apply(CustomFieldSetFixtureDefinition $definition): void
     {
-        $context = Context::createDefaultContext();
+        $context = Context::createCLIContext();
 
         $customFieldSetId = $this->getOrCreateCustomFieldSet($definition, $context);
 
@@ -46,7 +52,7 @@ class CustomFieldSetFixtureLoader
         if (empty($labels)) {
             $labels = [
                 'en-GB' => $definition->getName(),
-                Defaults::LANGUAGE_SYSTEM => $definition->getName()
+                Defaults::LANGUAGE_SYSTEM => $definition->getName(),
             ];
         }
 
@@ -81,7 +87,7 @@ class CustomFieldSetFixtureLoader
         $definedFieldNames = [];
 
         foreach ($definition->getFields() as $name => $fieldData) {
-            $technicalName = sprintf('%s_%s', $definition->getTechnicalName(), $name);
+            $technicalName = \sprintf('%s_%s', $definition->getTechnicalName(), $name);
             $definedFieldNames[] = $technicalName;
 
             if (isset($existingFields[$technicalName])) {
@@ -98,14 +104,14 @@ class CustomFieldSetFixtureLoader
             $fieldsToCreate[] = [
                 'id' => Uuid::randomHex(),
                 'name' => $technicalName,
-                ... $fieldData->build(),
+                ...$fieldData->build(),
                 'customFieldSetId' => $customFieldSetId,
             ];
         }
 
         // Delete fields that are not in the definition
         foreach ($existingFields as $fieldName => $field) {
-            if (!in_array($fieldName, $definedFieldNames, true)) {
+            if (!\in_array($fieldName, $definedFieldNames, true)) {
                 $fieldsToDelete[] = ['id' => $field->getId()];
             }
         }

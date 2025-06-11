@@ -21,6 +21,7 @@ class ThemeFixtureDefinition
     public function config(string $name, mixed $value): self
     {
         $this->config[$name] = $value;
+
         return $this;
     }
 

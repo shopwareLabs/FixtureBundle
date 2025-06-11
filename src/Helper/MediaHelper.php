@@ -2,9 +2,11 @@
 
 namespace Shopware\FixtureBundle\Helper;
 
+use Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderCollection;
 use Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderEntity;
 use Shopware\Core\Content\Media\File\FileFetcher;
 use Shopware\Core\Content\Media\File\FileSaver;
+use Shopware\Core\Content\Media\MediaCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -14,6 +16,10 @@ class MediaHelper
 {
     private array $defaultFolderCache = [];
 
+    /**
+     * @param EntityRepository<MediaCollection> $mediaRepository
+     * @param EntityRepository<MediaFolderCollection> $mediaFolderRepository
+     */
     public function __construct(
         private readonly EntityRepository $mediaRepository,
         private readonly EntityRepository $mediaFolderRepository,
@@ -34,7 +40,7 @@ class MediaHelper
             ->setLimit(1);
 
         $folder = $this->mediaFolderRepository
-            ->search($criteria, Context::createDefaultContext())
+            ->search($criteria, Context::createCLIContext())
             ->first();
 
         $this->defaultFolderCache[$entityName] = $folder;
@@ -46,7 +52,7 @@ class MediaHelper
     {
         $id = md5_file($filePath);
 
-        $context = Context::createDefaultContext();
+        $context = Context::createCLIContext();
         if ($this->mediaRepository->searchIds(new Criteria([$id]), $context)->firstId() !== null) {
             return $id;
         }
@@ -60,7 +66,7 @@ class MediaHelper
 
         $fileName = $fileName ?? basename($filePath);
 
-        $uploadedFile = $this->fileFetcher->fetchBlob(file_get_contents($filePath), pathinfo($filePath, PATHINFO_EXTENSION), mime_content_type($filePath));
+        $uploadedFile = $this->fileFetcher->fetchBlob(file_get_contents($filePath), pathinfo($filePath, \PATHINFO_EXTENSION), mime_content_type($filePath));
 
         $this->fileSaver->persistFileToMedia($uploadedFile, $fileName, $id, $context);
 

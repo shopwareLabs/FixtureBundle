@@ -1,5 +1,6 @@
 {
   "name": "shopware/fixture-bundle",
+  "type": "shopware-bundle",
   "description": "Fixture Bundle for Shopware 6",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -9,6 +10,10 @@
     }
   },
   "require": {
-    "shopware/core": "^6.6"
+    "shopware/core": "^6.6",
+    "shopware/storefront": "^6.6"
+  },
+  "extra": {
+    "shopware-bundle-name": "FixtureBundle"
   }
 }

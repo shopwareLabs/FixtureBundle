@@ -9,11 +9,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\FixtureBundle\FixtureException;
+use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeEntity;
 use Shopware\Storefront\Theme\ThemeService;
 
 class ThemeFixtureLoader
 {
+    /**
+     * @param EntityRepository<ThemeCollection> $themeRepository
+     */
     public function __construct(
         private readonly EntityRepository $themeRepository,
         private readonly ThemeService $themeService
@@ -22,7 +26,7 @@ class ThemeFixtureLoader
 
     public function apply(ThemeFixtureDefinition $definition): void
     {
-        $context = Context::createDefaultContext();
+        $context = Context::createCLIContext();
 
         $theme = $this->findThemeByName($definition->getThemeName(), $context);
 

@@ -10,7 +10,9 @@ class CustomFieldSetFixtureDefinition
      * @var array<string, CustomFieldFixtureDefinition>
      */
     private array $fields = [];
+
     private array $relations = [];
+
     private array $labels = [];
 
     public function __construct(
@@ -32,6 +34,7 @@ class CustomFieldSetFixtureDefinition
     public function label(string $translationKey, string $label): self
     {
         $this->labels[$translationKey] = $label;
+
         return $this;
     }
 
@@ -58,6 +61,7 @@ class CustomFieldSetFixtureDefinition
     public function relation(string $entityName): self
     {
         $this->relations[] = $entityName;
+
         return $this;
     }
 

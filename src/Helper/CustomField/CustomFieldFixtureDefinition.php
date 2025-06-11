@@ -25,8 +25,11 @@ class CustomFieldFixtureDefinition
     private array $helpText = [];
 
     private array $config = [];
+
     private bool $allowCustomerWrite = false;
+
     private bool $allowCartExpose = false;
+
     private bool $storeApiAware = false;
 
     private int $position = 0;
@@ -53,24 +56,28 @@ class CustomFieldFixtureDefinition
     public function label(string $translationKey, string $label): self
     {
         $this->labels[$translationKey] = $label;
+
         return $this;
     }
 
     public function placeholder(string $translationKey, string $placeholder): self
     {
         $this->placeholder[$translationKey] = $placeholder;
+
         return $this;
     }
 
     public function helpText(string $translationKey, string $helpText): self
     {
         $this->helpText[$translationKey] = $helpText;
+
         return $this;
     }
 
     public function config(array $config): self
     {
         $this->config = array_merge($this->config, $config);
+
         return $this;
     }
 
@@ -80,6 +87,7 @@ class CustomFieldFixtureDefinition
     public function modifiableByCustomer(bool $allow = true): self
     {
         $this->allowCustomerWrite = $allow;
+
         return $this;
     }
 
@@ -89,18 +97,21 @@ class CustomFieldFixtureDefinition
     public function availableInCart(bool $allow = true): self
     {
         $this->allowCartExpose = $allow;
+
         return $this;
     }
 
     public function visibleInStoreAPI(bool $allow = true): self
     {
         $this->storeApiAware = $allow;
+
         return $this;
     }
 
     public function position(int $position): self
     {
         $this->position = $position;
+
         return $this;
     }
 

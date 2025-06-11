@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Shopware\FixtureBundle;
 
-
 class FixtureCollection
 {
     /**
@@ -28,7 +27,7 @@ class FixtureCollection
         $this->fixtureMetadata[$class] = [
             'priority' => $priority,
             'dependsOn' => $dependsOn,
-            'groups' => $groups
+            'groups' => $groups,
         ];
     }
 
@@ -40,11 +39,12 @@ class FixtureCollection
         $filtered = $this->filterByGroup($group);
         $sorted = $this->sortByPriorityAndDependencies($filtered);
 
-        return array_map(fn($class) => $this->fixtures[$class], $sorted);
+        return array_map(fn ($class) => $this->fixtures[$class], $sorted);
     }
 
     /**
      * Get metadata for a specific fixture
+     *
      * @return array{priority: int, dependsOn: array, groups: array}
      */
     public function getFixtureMetadata(string $fixtureClass): array
@@ -52,7 +52,7 @@ class FixtureCollection
         return $this->fixtureMetadata[$fixtureClass] ?? [
             'priority' => 0,
             'dependsOn' => [],
-            'groups' => ['default']
+            'groups' => ['default'],
         ];
     }
 
@@ -67,12 +67,13 @@ class FixtureCollection
 
         return array_filter(
             array_keys($this->fixtures),
-            fn($class) => in_array($group, $this->fixtureMetadata[$class]['groups'], true)
+            fn ($class) => \in_array($group, $this->fixtureMetadata[$class]['groups'], true)
         );
     }
 
     /**
      * @param array<class-string> $classes
+     *
      * @return array<class-string>
      */
     private function sortByPriorityAndDependencies(array $classes): array
@@ -86,7 +87,7 @@ class FixtureCollection
         }
 
         // Sort by priority (higher priority first) while maintaining dependency order
-        usort($sorted, function ($a, $b) use ($sorted) {
+        usort($sorted, function ($a, $b) {
             // Check if there's a dependency relationship
             if ($this->hasDependency($a, $b)) {
                 return 1; // b depends on a, so a comes first
@@ -124,16 +125,16 @@ class FixtureCollection
         }
 
         if (isset($visiting[$class])) {
-            throw new \RuntimeException(sprintf('Circular dependency detected for fixture: %s', $class));
+            throw new \RuntimeException(\sprintf('Circular dependency detected for fixture: %s', $class));
         }
 
         $visiting[$class] = true;
 
         $dependencies = $this->fixtureMetadata[$class]['dependsOn'];
         foreach ($dependencies as $dependency) {
-            if (!in_array($dependency, $availableClasses, true)) {
+            if (!\in_array($dependency, $availableClasses, true)) {
                 if (!isset($this->fixtures[$dependency])) {
-                    throw new \RuntimeException(sprintf(
+                    throw new \RuntimeException(\sprintf(
                         'Fixture "%s" depends on "%s", but it is not registered',
                         $class,
                         $dependency
@@ -158,7 +159,7 @@ class FixtureCollection
     {
         $dependencies = $this->fixtureMetadata[$dependent]['dependsOn'];
 
-        if (in_array($dependency, $dependencies, true)) {
+        if (\in_array($dependency, $dependencies, true)) {
             return true;
         }
 

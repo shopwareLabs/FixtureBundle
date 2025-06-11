@@ -39,38 +39,40 @@ class LoadFixtureCommand extends Command
         $io->title('Loading Fixtures');
 
         if ($group !== null) {
-            $io->note(sprintf('Loading fixtures from group: %s', $group));
+            $io->note(\sprintf('Loading fixtures from group: %s', $group));
         }
 
         $fixtures = $this->fixtureCollection->getFixtures($group);
 
         if (empty($fixtures)) {
             $io->warning('No fixtures found to load.');
+
             return self::SUCCESS;
         }
 
-        $io->progressStart(count($fixtures));
+        $io->progressStart(\count($fixtures));
 
         foreach ($fixtures as $fixture) {
             $fixtureClass = $fixture::class;
-            $io->text(sprintf('Loading fixture: %s', $fixtureClass));
-            
+            $io->text(\sprintf('Loading fixture: %s', $fixtureClass));
+
             try {
                 $fixture->load();
                 $io->progressAdvance();
             } catch (\Exception $e) {
                 $io->progressFinish();
-                $io->error(sprintf(
+                $io->error(\sprintf(
                     'Error loading fixture %s: %s',
                     $fixtureClass,
                     $e->getMessage()
                 ));
+
                 return self::FAILURE;
             }
         }
 
         $io->progressFinish();
-        $io->success(sprintf('Successfully loaded %d fixtures.', count($fixtures)));
+        $io->success(\sprintf('Successfully loaded %d fixtures.', \count($fixtures)));
 
         return self::SUCCESS;
     }

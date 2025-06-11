@@ -40,13 +40,14 @@ class ListFixtureCommand extends Command
         $io->title('Available Fixtures');
 
         if ($group !== null) {
-            $io->note(sprintf('Filtering by group: %s', $group));
+            $io->note(\sprintf('Filtering by group: %s', $group));
         }
 
         $fixtures = $this->fixtureCollection->getFixtures($group);
 
         if (empty($fixtures)) {
             $io->warning('No fixtures found.');
+
             return self::SUCCESS;
         }
 
@@ -57,7 +58,7 @@ class ListFixtureCommand extends Command
         foreach ($fixtures as $index => $fixture) {
             $fixtureClass = $fixture::class;
             $metadata = $this->fixtureCollection->getFixtureMetadata($fixtureClass);
-            
+
             $priority = $metadata['priority'];
             $groups = implode(', ', $metadata['groups']);
             $dependsOn = $this->formatDependencies($metadata['dependsOn']);
@@ -67,7 +68,7 @@ class ListFixtureCommand extends Command
                 $this->formatClassName($fixtureClass),
                 $priority,
                 $groups,
-                $dependsOn
+                $dependsOn,
             ];
         }
 
@@ -80,6 +81,7 @@ class ListFixtureCommand extends Command
     private function formatClassName(string $className): string
     {
         $parts = explode('\\', $className);
+
         return end($parts);
     }
 
@@ -90,6 +92,7 @@ class ListFixtureCommand extends Command
         }
 
         $formatted = array_map([$this, 'formatClassName'], $dependencies);
+
         return implode(', ', $formatted);
     }
 }
