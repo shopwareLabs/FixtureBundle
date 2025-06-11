@@ -35,5 +35,12 @@
             <argument type="service" id="custom_field_set.repository"/>
             <argument type="service" id="custom_field.repository"/>
         </service>
+
+        <service id="Shopware\FixtureBundle\Helper\MediaHelper">
+            <argument type="service" id="media.repository"/>
+            <argument type="service" id="media_folder.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileFetcher"/>
+        </service>
     </services>
 </container>

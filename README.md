@@ -257,8 +257,6 @@ class BrandingThemeFixture implements FixtureInterface
             (new ThemeFixtureDefinition('Shopware default theme'))
                 ->config('sw-color-brand-primary', '#007bff')
                 ->config('sw-color-brand-secondary', '#6c757d')
-                ->config('sw-logo-desktop', 'media/logo-desktop.svg')
-                ->config('sw-logo-mobile', 'media/logo-mobile.svg')
         );
 
         // Configure custom theme if available
@@ -271,6 +269,35 @@ class BrandingThemeFixture implements FixtureInterface
         } catch (FixtureException $e) {
             // Custom theme not available, skip
         }
+    }
+}
+```
+
+### Setting Logo
+
+```php
+#[Fixture(groups: ['theme-config', 'branding'])]
+class BrandingThemeFixture implements FixtureInterface
+{
+    public function __construct(
+        private readonly ThemeFixtureLoader $themeFixtureLoader
+    ) {
+    }
+
+    public function load(): void
+    {
+        // Will be uploaded just once and reused based on file content
+        $logo = $this->mediaHelper->upload(__DIR__ . '/shop.png', $this->mediaHelper->getDefaultFolder(ThemeDefinition::ENTITY_NAME)->getId());
+    
+        // Configure main storefront theme
+        $this->themeFixtureLoader->load(
+            (new ThemeFixtureDefinition('Shopware default theme'))
+                ->config('sw-color-brand-primary', '#007bff')
+                ->config('sw-color-brand-secondary', '#6c757d')
+                ->config('sw-logo-desktop', $logo)
+                ->config('sw-logo-tablet', $logo)
+                ->config('sw-logo-mobile', $logo)
+        );
     }
 }
 ```
