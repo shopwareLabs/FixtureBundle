@@ -20,7 +20,7 @@ class ThemeFixtureLoader
     ) {
     }
 
-    public function load(ThemeFixtureDefinition $definition): void
+    public function apply(ThemeFixtureDefinition $definition): void
     {
         $context = Context::createDefaultContext();
 

@@ -20,7 +20,7 @@ class CustomFieldSetFixtureLoader
     ) {
     }
 
-    public function load(CustomFieldSetFixtureDefinition $definition): void
+    public function apply(CustomFieldSetFixtureDefinition $definition): void
     {
         $context = Context::createDefaultContext();
 

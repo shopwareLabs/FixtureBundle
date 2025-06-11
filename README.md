@@ -228,7 +228,7 @@ class ThemeFixture implements FixtureInterface
 
     public function load(): void
     {
-        $this->themeFixtureLoader->load(
+        $this->themeFixtureLoader->apply(
             (new ThemeFixtureDefinition('Shopware default theme'))
                 ->config('sw-color-brand-primary', '#ff6900')
                 ->config('sw-border-radius-default', '8px')
@@ -253,7 +253,7 @@ class BrandingThemeFixture implements FixtureInterface
     public function load(): void
     {
         // Configure main storefront theme
-        $this->themeFixtureLoader->load(
+        $this->themeFixtureLoader->apply(
             (new ThemeFixtureDefinition('Shopware default theme'))
                 ->config('sw-color-brand-primary', '#007bff')
                 ->config('sw-color-brand-secondary', '#6c757d')
@@ -261,7 +261,7 @@ class BrandingThemeFixture implements FixtureInterface
 
         // Configure custom theme if available
         try {
-            $this->themeFixtureLoader->load(
+            $this->themeFixtureLoader->apply(
                 (new ThemeFixtureDefinition('Custom Theme'))
                     ->config('custom-header-color', '#ffffff')
                     ->config('custom-footer-background', '#333333')
@@ -290,7 +290,7 @@ class BrandingThemeFixture implements FixtureInterface
         $logo = $this->mediaHelper->upload(__DIR__ . '/shop.png', $this->mediaHelper->getDefaultFolder(ThemeDefinition::ENTITY_NAME)->getId());
     
         // Configure main storefront theme
-        $this->themeFixtureLoader->load(
+        $this->themeFixtureLoader->apply(
             (new ThemeFixtureDefinition('Shopware default theme'))
                 ->config('sw-color-brand-primary', '#007bff')
                 ->config('sw-color-brand-secondary', '#6c757d')
@@ -356,7 +356,7 @@ class CustomFieldFixture implements FixtureInterface
 
     public function load(): void
     {
-        $this->customFieldSetFixtureLoader->load(
+        $this->customFieldSetFixtureLoader->apply(
             (new CustomFieldSetFixtureDefinition('Product Specifications', 'product_specs'))
                 ->relation('product')
                 ->field(
