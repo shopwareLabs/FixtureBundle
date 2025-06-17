@@ -27,7 +27,12 @@ jobs:
                 composer install --no-interaction --prefer-dist --optimize-autoloader
 
             - name: Start MySQL Server
-              run: sudo systemctl start mysqld
+              run: |
+                sudo mv /var/lib/mysql /var/lib/mysql-old
+                sudo mkdir /var/lib/mysql
+                sudo mount -t tmpfs tmpfs /var/lib/mysql -o size=1G
+                sudo -u mysql mysqld --datadir=/var/lib/mysql --default-time-zone=SYSTEM --initialize-insecure
+                sudo systemctl start mysql
 
             - name: Bootstrap Shopware
               run: php vendor/shopware/core/TestBootstrap.php
