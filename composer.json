@@ -11,9 +11,9 @@
   },
   "require": {
     "php": "^8.2",
-    "shopware/administration": "^6.6",
-    "shopware/core": "^6.6",
-    "shopware/storefront": "^6.6"
+    "shopware/administration": "^6.6.10",
+    "shopware/core": "^6.6.10",
+    "shopware/storefront": "^6.6.10"
   },
   "extra": {
     "shopware-bundle-name": "FixtureBundle"
