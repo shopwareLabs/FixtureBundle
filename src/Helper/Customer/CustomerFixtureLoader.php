@@ -136,7 +136,7 @@ class CustomerFixtureLoader
         }
 
         if ($definition->getDepartment() !== null) {
-            $data['company'] = $definition->getDepartment();
+            $data['department'] = $definition->getDepartment();
         }
 
         if ($definition->getVatId() !== null) {

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+         bootstrap="vendor/shopware/core/TestBootstrap.php"
+         cacheResult="false"
+         executionOrder="random"
+         displayDetailsOnPhpunitDeprecations="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         cacheDirectory=".phpunit.cache">
+    <coverage includeUncoveredFiles="true"/>
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </source>
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="memory_limit" value="-1"/>
+        <server name="KERNEL_CLASS" value="Shopware\Core\Kernel"/>
+        <server name="APP_ENV" value="test"/>
+        <env name="APP_ENV" value="test"/>
+        <env name="APP_DEBUG" value="1"/>
+        <env name="APP_SECRET" value="def00000bb5acb32b54ff8ee130270586eec0e878f7337dc7a837acc31d3ff00f93a56b595448b4b29664847dd51991b3314ff65aeeeb761a133b0ec0e070433bff08e48"/>
+        <env name="SHOPWARE_HTTP_CACHE_ENABLED" value="0"/>
+        <env name="SHELL_VERBOSITY" value="-1"/>
+        <server name="TESTS_RUNNING" value="1"/>
+        <server name="MAILER_URL" value="null://localhost"/>
+        <server name="HTTPS" value="off"/>
+        <!--To see the full stackTrace of a Deprecation set the value to a regex matching the deprecation warning-->
+        <!--https://symfony.com/doc/current/components/phpunit_bridge.html#display-the-full-stack-trace-->
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0&amp;ignoreFile=./deprecation.ignore" />
+    </php>
+    <testsuites>
+        <testsuite name="tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
