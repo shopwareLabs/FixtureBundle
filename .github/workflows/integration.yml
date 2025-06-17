@@ -12,7 +12,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             APP_URL: http://localhost:8000
-            DATABASE_URL: mysql://root:root@localhost/shopware
+            DATABASE_URL: mysql://root@localhost/shopware
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
