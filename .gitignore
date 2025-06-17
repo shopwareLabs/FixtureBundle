@@ -1,6 +1,5 @@
 /vendor
 /composer.lock
 /var
-/config
 /install.lock
 /.phpunit.cache

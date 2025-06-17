@@ -1,0 +1,41 @@
+name: Integration Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+    phpunit:
+        runs-on: ubuntu-latest
+        env:
+            APP_URL: http://localhost:8000
+            DATABASE_URL: mysql://root@localhost/shopware
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+
+            - name: Install dependencies
+              run: |
+                composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            - name: Start MySQL Server
+              run: |
+                sudo mv /var/lib/mysql /var/lib/mysql-old
+                sudo mkdir /var/lib/mysql
+                sudo mount -t tmpfs tmpfs /var/lib/mysql -o size=1G
+                sudo -u mysql mysqld --datadir=/var/lib/mysql --default-time-zone=SYSTEM --initialize-insecure
+                sudo systemctl start mysql
+
+            - name: Bootstrap Shopware
+              run: php vendor/shopware/core/TestBootstrap.php
+
+            - name: Run PHPUnit tests
+              run: vendor/bin/phpunit
