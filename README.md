@@ -384,12 +384,179 @@ class CustomFieldFixture implements FixtureInterface
 }
 ```
 
+## Customer Fixtures
+
+The FixtureBundle provides comprehensive customer management through fixtures using `CustomerFixtureLoader` and `CustomerFixtureDefinition` classes for creating test customers with addresses, custom fields, and relationships.
+
+### Basic Customer Fixture
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace Acme\Fixture;
+
+use Shopware\FixtureBundle\Attribute\Fixture;
+use Shopware\FixtureBundle\FixtureInterface;
+use Shopware\FixtureBundle\Helper\Customer\CustomerFixtureDefinition;
+use Shopware\FixtureBundle\Helper\Customer\CustomerFixtureLoader;
+
+#[Fixture]
+class CustomerFixture implements FixtureInterface
+{
+    public function __construct(
+        private readonly CustomerFixtureLoader $customerFixtureLoader
+    ) {
+    }
+
+    public function load(): void
+    {
+        $this->customerFixtureLoader->apply(
+            (new CustomerFixtureDefinition('john.doe@example.com'))
+                ->firstName('John')
+                ->lastName('Doe')
+                ->salutation('mr')
+                ->password('password123')
+                ->company('ACME Corporation')
+                ->department('IT Department')
+        );
+    }
+}
+```
+
+### Customer with Complete Information
+
+```php
+#[Fixture(groups: ['customers', 'test-data'])]
+class DetailedCustomerFixture implements FixtureInterface
+{
+    public function __construct(
+        private readonly CustomerFixtureLoader $customerFixtureLoader
+    ) {
+    }
+
+    public function load(): void
+    {
+        $this->customerFixtureLoader->apply(
+            (new CustomerFixtureDefinition('jane.smith@example.com'))
+                ->firstName('Jane')
+                ->lastName('Smith')
+                ->salutation('mrs')
+                ->title('Dr.')
+                ->birthday('1990-05-15')
+                ->company('Tech Solutions Ltd')
+                ->department('Marketing')
+                ->vatId('DE123456789')
+                ->password('secure123')
+                ->customerNumber('CUST-001')
+                ->affiliateCode('PARTNER-123')
+                ->campaignCode('SUMMER2024')
+                ->active(true)
+                ->guest(false)
+                ->customFields([
+                    'vip_level' => 'gold',
+                    'newsletter_subscription' => true,
+                    'preferred_contact' => 'email'
+                ])
+        );
+    }
+}
+```
+
+### Customer with Addresses
+
+```php
+#[Fixture(groups: ['customers', 'addresses'])]
+class CustomerWithAddressesFixture implements FixtureInterface
+{
+    public function __construct(
+        private readonly CustomerFixtureLoader $customerFixtureLoader
+    ) {
+    }
+
+    public function load(): void
+    {
+        $this->customerFixtureLoader->apply(
+            (new CustomerFixtureDefinition('customer@example.com'))
+                ->firstName('Max')
+                ->lastName('Mustermann')
+                ->salutation('mr')
+                ->password('password')
+                ->defaultBillingAddress([
+                    'firstName' => 'Max',
+                    'lastName' => 'Mustermann',
+                    'street' => 'Musterstraße 123',
+                    'zipcode' => '12345',
+                    'city' => 'Musterstadt',
+                    'country' => 'DEU',
+                    'company' => 'Musterfirma GmbH',
+                    'phoneNumber' => '+49 123 456789',
+                    'salutation' => 'mr'
+                ])
+                ->defaultShippingAddress([
+                    'firstName' => 'Max',
+                    'lastName' => 'Mustermann',
+                    'street' => 'Lieferadresse 456',
+                    'zipcode' => '67890',
+                    'city' => 'Lieferstadt',
+                    'country' => 'DEU',
+                    'additionalAddressLine1' => 'Building B',
+                    'additionalAddressLine2' => '3rd Floor'
+                ])
+                ->addAddress('work', [
+                    'firstName' => 'Max',
+                    'lastName' => 'Mustermann',
+                    'street' => 'Office Street 789',
+                    'zipcode' => '11111',
+                    'city' => 'Business City',
+                    'country' => 'DEU',
+                    'company' => 'Work Corporation'
+                ])
+        );
+    }
+}
+```
+
+### Guest Customer Fixture
+
+```php
+#[Fixture(groups: ['customers', 'guest-orders'])]
+class GuestCustomerFixture implements FixtureInterface
+{
+    public function __construct(
+        private readonly CustomerFixtureLoader $customerFixtureLoader
+    ) {
+    }
+
+    public function load(): void
+    {
+        $this->customerFixtureLoader->apply(
+            (new CustomerFixtureDefinition('guest@example.com'))
+                ->firstName('Guest')
+                ->lastName('User')
+                ->guest(true)
+                ->active(false)
+                ->defaultBillingAddress([
+                    'firstName' => 'Guest',
+                    'lastName' => 'User',
+                    'street' => 'Guest Street 1',
+                    'zipcode' => '99999',
+                    'city' => 'Guest City',
+                    'country' => 'DEU'
+                ])
+        );
+    }
+}
+```
+
 ## Best Practices
 
 1. **Use meaningful names**: Name your fixtures clearly to indicate what data they create
-2. **Organize with groups**: Use groups to categorize fixtures (e.g., 'test-data', 'demo-data', 'performance-test', 'theme-config')
+2. **Organize with groups**: Use groups to categorize fixtures (e.g., 'test-data', 'demo-data', 'performance-test', 'theme-config', 'customers')
 3. **Declare dependencies explicitly**: Always declare dependencies to ensure correct execution order
 4. **Keep fixtures focused**: Each fixture should have a single responsibility
 5. **Make fixtures idempotent**: Fixtures should be able to run multiple times without errors
 6. **Use dependency injection**: Inject the services you need rather than accessing the container directly
 7. **Handle theme errors gracefully**: Use try-catch blocks when configuring optional themes
+8. **Use email as unique identifier**: Customer fixtures use email as the primary identifier for updates vs. creation
