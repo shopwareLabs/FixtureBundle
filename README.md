@@ -4,7 +4,9 @@ The FixtureBundle provides a flexible and organized way to load test data into y
 
 ## Installation
 
-The bundle is automatically registered when placed in the `custom/static-plugins/FixtureBundle` directory.
+```bash
+composer require shopware/fixture-bundle:*
+```
 
 ## Creating Fixtures
 
